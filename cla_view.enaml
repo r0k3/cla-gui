@@ -1,0 +1,52 @@
+#------------------------------------------------------------------------------
+#  Copyright (c) 2011, Enthought, Inc.
+#  All rights reserved.
+#------------------------------------------------------------------------------
+from enaml.layout.api import vbox, hbox, spacer
+from enaml.widgets.api import Window, Label, Container, Slider, EnableCanvas, \
+                              Notebook, Page
+from enaml.stdlib.slider_transforms import FloatTransform
+
+enamldef MainView(Window):
+    attr model
+    Container:
+        constraints = [
+            hbox(nb, controls)
+        ]
+        Container: controls:
+            constraints = [vbox(sigma, slide, spacer)]
+            Label: sigma:
+                text << u'sigma: %.2f' % model.current_sigma
+            Slider: slide:
+                tick_interval = 10
+                maximum = 80
+                value := model.sigma_index
+        Notebook: nb:
+            tab_style = 'preferences'
+            Page: plots:
+                title = 'Plots'
+                closable = False
+                Container:
+                    EnableCanvas: cla:
+                        constraints = [
+                            width >= 600,
+                            height >= 400
+                            ]
+                        component = model.plot
+                    EnableCanvas: bar:
+                        constraints = [
+                            width >= 600,
+                            height >= 400
+                            ]
+                        component = model.bar
+            Page: matrix:
+                title = 'Matrix'
+                closable = False
+                Container:
+                    EnableCanvas: cla:
+                        constraints = [
+                            width == 600,
+                            height == 600
+                            ]
+                        component = model.corr_plot
+
